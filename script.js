@@ -2,11 +2,11 @@
 var prices = {
   // Услуги: базовая цена и сколько экранов входит в базу
   landing:    { basePrice: 19000, baseScreens: 6 },
-  visitor:   { basePrice: 14000, baseScreens: 5 },
+  visitor:    { basePrice: 14000, baseScreens: 5 },
   calculator: { basePrice: 27000, baseScreens: 5 },
-  corporate: { basePrice: 37000, baseScreens: 8 },
+  corporate:  { basePrice: 37000, baseScreens: 8 },
   // «Другое»: база 1 экран, цена вводится вручную
-  other:     { basePrice: 0, baseScreens: 1 },
+  other:      { basePrice: 0, baseScreens: 1 },
   // Доплата за каждый экран сверх базы, ₽
   extraScreen: 2800,
   // Надбавки за опции, ₽
@@ -18,26 +18,24 @@ var prices = {
 };
 
 // Элементы формы (получаем один раз при загрузке)
-var elService = document.getElementById("service");
+var elService       = document.getElementById("service");
 var elOtherPriceWrap = document.getElementById("other-price-wrap");
-var elOtherPrice = document.getElementById("other-price");
-var elScreens = document.getElementById("screens");
-var elScreensValue = document.getElementById("screens-value");
-var elOptTelegram = document.getElementById("opt-telegram");
-var elOptSeo = document.getElementById("opt-seo");
-var elOptDesign = document.getElementById("opt-design");
-var elOptUrgency = document.getElementById("opt-urgency");
-var elTotalPrice = document.getElementById("total-price");
-var btnOffer = document.getElementById("btn-offer");
-var btnPrint = document.getElementById("btn-print");
+var elOtherPrice    = document.getElementById("other-price");
+var elScreens       = document.getElementById("screens");
+var elScreensValue  = document.getElementById("screens-value");
+var elOptTelegram   = document.getElementById("opt-telegram");
+var elOptSeo        = document.getElementById("opt-seo");
+var elOptDesign     = document.getElementById("opt-design");
+var elOptUrgency    = document.getElementById("opt-urgency");
+var elTotalPrice    = document.getElementById("total-price");
+var elResult        = document.getElementById("result");
+var btnOffer        = document.getElementById("btn-offer");
+var btnPrint        = document.getElementById("btn-print");
 
 // Показать или скрыть поле «Ваша цена» для услуги «Другое»
+// Упрощено: одна строка вместо if/else с двумя display
 function toggleOtherPrice() {
-  if (elService.value === "other") {
-    elOtherPriceWrap.style.display = "block";
-  } else {
-    elOtherPriceWrap.style.display = "none";
-  }
+  elOtherPriceWrap.style.display = elService.value === "other" ? "block" : "none";
 }
 
 // Получить базовую цену и лимит экранов для выбранной услуги
@@ -80,10 +78,12 @@ function calcTotal() {
   return Math.round(total);
 }
 
-// Обновить отображаемое значение ползунка и итог
+// Обновить ползунок и итог; скрыть устаревший результат при изменении формы
 function updateDisplay() {
   elScreensValue.textContent = elScreens.value;
   elTotalPrice.textContent = calcTotal().toLocaleString("ru-RU");
+  // Прячем блок результата — данные изменились, старый расчёт неактуален
+  elResult.style.display = "none";
 }
 
 // Собрать все данные формы для заявки
@@ -104,27 +104,28 @@ function getFormData() {
   };
 }
 
-// Текст заявки для alert
+// Текст заявки
+// Упрощено: прямая сборка строки вместо массива с join
 function getOfferText(data) {
-  var parts = [];
-  parts.push("ЗАЯВКА НА КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ");
-  parts.push("");
-  parts.push("Услуга: " + data.service);
-  parts.push("Экранов/страниц: " + data.screens);
-  parts.push("Telegram + форма: " + (data.telegram ? "да" : "нет"));
-  parts.push("SEO базовая: " + (data.seo ? "да" : "нет"));
-  parts.push("Уникальный дизайн: " + (data.design ? "да" : "нет"));
-  parts.push("Срочность 3–5 дней: " + (data.urgency ? "да" : "нет"));
-  parts.push("");
-  parts.push("Итого: " + data.total.toLocaleString("ru-RU") + " ₽");
-  return parts.join("\n");
+  var text = "ЗАЯВКА НА КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ\n\n";
+  text += "Услуга: " + data.service + "\n";
+  text += "Экранов/страниц: " + data.screens + "\n";
+  text += "Telegram + форма: " + (data.telegram ? "да" : "нет") + "\n";
+  text += "SEO базовая: " + (data.seo ? "да" : "нет") + "\n";
+  text += "Уникальный дизайн: " + (data.design ? "да" : "нет") + "\n";
+  text += "Срочность 3–5 дней: " + (data.urgency ? "да" : "нет") + "\n\n";
+  text += "Итого: " + data.total.toLocaleString("ru-RU") + " ₽";
+  return text;
 }
 
-// Обработчик: получить КП
+// Обработчик: показать КП прямо на странице вместо alert
 function onOfferClick() {
   var data = getFormData();
   var text = getOfferText(data);
-  alert(text);
+  // Вставляем текст в блок #result и делаем его видимым
+  // CSS-свойство white-space: pre-line сохранит переносы \n
+  elResult.textContent = text;
+  elResult.style.display = "block";
   console.log("Данные калькулятора (для заявки):", data);
 }
 
@@ -143,11 +144,11 @@ function init() {
     updateDisplay();
   });
 
+  // «input» срабатывает при каждом вводе символа — «change» для числового поля лишний
   elOtherPrice.addEventListener("input", updateDisplay);
-  elOtherPrice.addEventListener("change", updateDisplay);
 
+  // «input» на range срабатывает при каждом движении ползунка — «change» дублировал его
   elScreens.addEventListener("input", updateDisplay);
-  elScreens.addEventListener("change", updateDisplay);
 
   elOptTelegram.addEventListener("change", updateDisplay);
   elOptSeo.addEventListener("change", updateDisplay);

@@ -22,7 +22,8 @@
         </select>
       </div>
 
-      <div class="field" id="other-price-wrap" style="display: none;">
+      <!-- display: none перенесён в CSS, inline-стиль убран -->
+      <div class="field" id="other-price-wrap">
         <label for="other-price">Ваша цена (база), ₽</label>
         <input type="number" id="other-price" name="other-price" min="0" value="0" placeholder="0">
       </div>
@@ -39,6 +40,9 @@
         <label><input type="checkbox" id="opt-urgency" name="urgency"> Срочность 3–5 дней (+50 % к итогу)</label>
       </div>
 
+      <!-- hr.divider — визуальный разделитель между настройками и итогом -->
+      <hr class="divider">
+
       <div class="total">
         <strong>Итого:</strong> <span id="total-price">0</span> ₽
       </div>
@@ -47,6 +51,9 @@
         <button type="button" id="btn-offer">Получить коммерческое предложение</button>
         <button type="button" id="btn-print">Распечатать расчёт</button>
       </div>
+
+      <!-- Блок результата: появляется вместо alert, скрыт по умолчанию через CSS -->
+      <div id="result"></div>
     </form>
   </div>
 

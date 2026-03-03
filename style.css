@@ -4,8 +4,9 @@
 }
 
 body {
-  font-family: Georgia, "Times New Roman", serif;
-  background: #f5f0eb;
+  /* system-ui подставляет родной шрифт системы: SF Pro на Mac, Segoe UI на Windows */
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #f1f5f9; /* нейтральный холодный серый вместо бежевого */
   color: #333;
   margin: 0;
   padding: 20px;
@@ -49,6 +50,11 @@ h1 {
   cursor: pointer;
 }
 
+/* Поле «Другое» скрыто по умолчанию — убрано из inline-стиля HTML */
+#other-price-wrap {
+  display: none;
+}
+
 select,
 input[type="number"] {
   width: 100%;
@@ -57,17 +63,35 @@ input[type="number"] {
   border: 1px solid #bbb;
   border-radius: 6px;
   background: #fff;
+  /* плавная смена рамки при фокусе */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Видимый фокус при навигации с клавиатуры и клике */
+select:focus,
+input[type="number"]:focus {
+  outline: none;
+  border-color: #2c5aa0;
+  box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.15);
 }
 
 input[type="range"] {
   width: 100%;
   margin-top: 4px;
   accent-color: #2c5aa0;
+  cursor: pointer;
+}
+
+/* Горизонтальный разделитель перед блоком итога */
+.divider {
+  border: none;
+  border-top: 2px solid #e2e8f0;
+  margin: 4px 0 24px 0;
 }
 
 /* Итоговая цена */
 .total {
-  margin: 24px 0 20px 0;
+  margin: 0 0 20px 0;
   padding: 14px 16px;
   background: #e8f0fe;
   border-radius: 6px;
@@ -95,6 +119,8 @@ input[type="range"] {
   cursor: pointer;
   background: #2c5aa0;
   color: #fff;
+  /* плавный переход при наведении */
+  transition: background 0.2s;
 }
 
 .buttons button:hover {
@@ -109,9 +135,25 @@ input[type="range"] {
   background: #444;
 }
 
+/* Блок результата — появляется вместо alert при нажатии «Получить КП» */
+#result {
+  display: none; /* скрыт по умолчанию, JS переключает на block */
+  margin-top: 20px;
+  padding: 14px 16px;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  /* white-space: pre-line сохраняет переносы строк \n из JS */
+  white-space: pre-line;
+  color: #166534;
+}
+
 /* Скрытие при печати лишних элементов */
 @media print {
   body { background: #fff; }
   .wrapper { box-shadow: none; }
   .buttons { display: none; }
+  /* результат виден при печати, даже если кнопки скрыты */
+  #result { display: block; }
 }
