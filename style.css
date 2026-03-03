@@ -1,106 +1,211 @@
-/* Базовые стили */
+/* Базовые переменные и сброс */
+:root {
+  --bg-body: #f8fafc;        /* Светлый slate */
+  --bg-card: #ffffff;
+  --text-main: #0f172a;      /* Тёмный slate */
+  --text-muted: #475569;
+  --border-color: #e2e8f0;
+  
+  --primary: #3b82f6;        /* Яркий синий */
+  --primary-hover: #2563eb;
+  --primary-light: #eff6ff;
+  
+  --success-bg: #f0fdf4;
+  --success-border: #bbf7d0;
+  --success-text: #166534;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
-  /* system-ui подставляет родной шрифт системы: SF Pro на Mac, Segoe UI на Windows */
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #f1f5f9; /* нейтральный холодный серый вместо бежевого */
-  color: #333;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  background: var(--bg-body);
+  color: var(--text-main);
   margin: 0;
-  padding: 20px;
+  padding: 40px 20px;
   line-height: 1.5;
+  /* Плавный скролл и рендеринг */
+  -webkit-font-smoothing: antialiased;
 }
 
+/* Главная карточка */
 .wrapper {
-  max-width: 520px;
+  max-width: 560px;
   margin: 0 auto;
-  background: #fff;
-  padding: 28px 32px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  background: var(--bg-card);
+  padding: 32px 40px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 h1 {
-  margin: 0 0 24px 0;
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #1a1a1a;
+  margin: 0 0 32px 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--text-main);
+  line-height: 1.3;
 }
 
 /* Поля формы */
 .field {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .field label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* Инпуты и Селекты */
+select,
+input[type="number"] {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-body);
+  color: var(--text-main);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  /* Убираем стандартные стили для консистентности */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+}
+
+input[type="number"] {
+  background-image: none;
+  cursor: text;
+}
+
+select:focus,
+input[type="number"]:focus {
+  outline: none;
+  background-color: var(--bg-card);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+/* Скрытое поле */
+#other-price-wrap {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ползунок */
+input[type="range"] {
+  width: 100%;
+  margin-top: 8px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  height: 6px;
+  border-radius: var(--radius-sm);
+  background: var(--border-color);
+  appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--primary);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* Чекбоксы */
+.field.checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
 }
 
 .field.checkboxes label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   font-weight: 500;
-  margin-bottom: 10px;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  margin: 0;
   cursor: pointer;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  transition: background 0.2s;
+  /* Компенсируем отступы, чтобы лейблы были на уровне текста */
+  margin-left: -12px;
 }
 
-/* Поле «Другое» скрыто по умолчанию — убрано из inline-стиля HTML */
-#other-price-wrap {
-  display: none;
+.field.checkboxes label:hover {
+  background: var(--bg-body);
 }
 
-select,
-input[type="number"] {
-  width: 100%;
-  padding: 10px 12px;
-  font-size: 1rem;
-  border: 1px solid #bbb;
-  border-radius: 6px;
-  background: #fff;
-  /* плавная смена рамки при фокусе */
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-/* Видимый фокус при навигации с клавиатуры и клике */
-select:focus,
-input[type="number"]:focus {
-  outline: none;
-  border-color: #2c5aa0;
-  box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.15);
-}
-
-input[type="range"] {
-  width: 100%;
-  margin-top: 4px;
-  accent-color: #2c5aa0;
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--primary);
   cursor: pointer;
+  border-radius: 4px;
 }
 
-/* Горизонтальный разделитель перед блоком итога */
+/* Разделитель */
 .divider {
   border: none;
-  border-top: 2px solid #e2e8f0;
-  margin: 4px 0 24px 0;
+  border-top: 1px solid var(--border-color);
+  margin: 32px 0 24px 0;
 }
 
-/* Итоговая цена */
+/* Блок Итого */
 .total {
-  margin: 0 0 20px 0;
-  padding: 14px 16px;
-  background: #e8f0fe;
-  border-radius: 6px;
-  font-size: 1.15rem;
+  margin: 0 0 28px 0;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, var(--primary-light), #e0e7ff);
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.total strong {
+  font-size: 1.125rem;
+  color: #1e3a8a;
+  font-weight: 600;
 }
 
 .total #total-price {
-  font-size: 1.35rem;
-  color: #1a56a0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary-hover);
+  letter-spacing: -0.025em;
 }
 
 /* Кнопки */
@@ -111,49 +216,100 @@ input[type="range"] {
 }
 
 .buttons button {
-  padding: 12px 20px;
+  padding: 14px 24px;
   font-size: 1rem;
   font-weight: 600;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  background: #2c5aa0;
+  transition: all 0.2s ease;
+  flex: 1; /* Кнопки тянутся равномерно */
+  min-width: 200px;
+}
+
+/* Главная кнопка */
+.buttons button:first-child {
+  background: var(--primary);
   color: #fff;
-  /* плавный переход при наведении */
-  transition: background 0.2s;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
 }
 
-.buttons button:hover {
-  background: #234a87;
+.buttons button:first-child:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.4);
 }
 
+.buttons button:first-child:active {
+  transform: translateY(0);
+}
+
+/* Второстепенная кнопка (печать) */
 .buttons button:last-child {
-  background: #555;
+  background: #fff;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
 }
 
 .buttons button:last-child:hover {
-  background: #444;
+  background: var(--bg-body);
+  color: var(--text-main);
+  border-color: #cbd5e1;
 }
 
-/* Блок результата — появляется вместо alert при нажатии «Получить КП» */
+/* Блок результата */
 #result {
-  display: none; /* скрыт по умолчанию, JS переключает на block */
-  margin-top: 20px;
-  padding: 14px 16px;
-  background: #f0fdf4;
-  border: 1px solid #86efac;
-  border-radius: 6px;
+  display: none;
+  margin-top: 24px;
+  padding: 20px;
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  border-left: 4px solid #22c55e;
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
-  /* white-space: pre-line сохраняет переносы строк \n из JS */
   white-space: pre-line;
-  color: #166534;
+  color: var(--success-text);
+  line-height: 1.6;
+  animation: fadeIn 0.4s ease;
 }
 
-/* Скрытие при печати лишних элементов */
+/* Адаптивность для мобильных */
+@media (max-width: 480px) {
+  .wrapper {
+    padding: 24px 20px;
+  }
+  
+  .buttons button {
+    width: 100%;
+  }
+  
+  .total {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* Печать */
 @media print {
-  body { background: #fff; }
-  .wrapper { box-shadow: none; }
+  body { 
+    background: #fff; 
+    padding: 0;
+  }
+  .wrapper { 
+    box-shadow: none; 
+    border: none;
+    padding: 0;
+  }
   .buttons { display: none; }
-  /* результат виден при печати, даже если кнопки скрыты */
-  #result { display: block; }
+  #result { 
+    display: block; 
+    border: 1px solid #ccc;
+    background: #fff;
+    color: #000;
+  }
+  .total {
+    background: #fff;
+    border: 1px solid #ccc;
+  }
 }
