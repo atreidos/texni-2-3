@@ -1,0 +1,117 @@
+/* Базовые стили */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  background: #f5f0eb;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+  line-height: 1.5;
+}
+
+.wrapper {
+  max-width: 520px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 28px 32px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+  margin: 0 0 24px 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* Поля формы */
+.field {
+  margin-bottom: 20px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.field.checkboxes label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+select,
+input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  background: #fff;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin-top: 4px;
+  accent-color: #2c5aa0;
+}
+
+/* Итоговая цена */
+.total {
+  margin: 24px 0 20px 0;
+  padding: 14px 16px;
+  background: #e8f0fe;
+  border-radius: 6px;
+  font-size: 1.15rem;
+}
+
+.total #total-price {
+  font-size: 1.35rem;
+  color: #1a56a0;
+}
+
+/* Кнопки */
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.buttons button {
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #2c5aa0;
+  color: #fff;
+}
+
+.buttons button:hover {
+  background: #234a87;
+}
+
+.buttons button:last-child {
+  background: #555;
+}
+
+.buttons button:last-child:hover {
+  background: #444;
+}
+
+/* Скрытие при печати лишних элементов */
+@media print {
+  body { background: #fff; }
+  .wrapper { box-shadow: none; }
+  .buttons { display: none; }
+}

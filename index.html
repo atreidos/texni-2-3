@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор стоимости разработки — Фрилансер</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrapper">
+    <h1>Калькулятор стоимости разработки — Фрилансер-разработчик</h1>
+
+    <form id="calc-form">
+      <div class="field">
+        <label for="service">Услуга</label>
+        <select id="service" name="service">
+          <option value="landing">Лендинг / Квиз-лендинг — 19 000 ₽ (база до 6 экранов)</option>
+          <option value="visitor">Сайт-визитка / Портфолио — 14 000 ₽ (база до 5 экранов)</option>
+          <option value="calculator">Интерактивный калькулятор — 27 000 ₽ (база до 5 экранов)</option>
+          <option value="corporate">Корпоративный сайт — 37 000 ₽ (база до 8 экранов)</option>
+          <option value="other">Другое</option>
+        </select>
+      </div>
+
+      <div class="field" id="other-price-wrap" style="display: none;">
+        <label for="other-price">Ваша цена (база), ₽</label>
+        <input type="number" id="other-price" name="other-price" min="0" value="0" placeholder="0">
+      </div>
+
+      <div class="field">
+        <label>Количество экранов/страниц: <strong id="screens-value">1</strong></label>
+        <input type="range" id="screens" name="screens" min="1" max="20" value="1">
+      </div>
+
+      <div class="field checkboxes">
+        <label><input type="checkbox" id="opt-telegram" name="telegram" value="4500"> Telegram + форма обратной связи (+4 500 ₽)</label>
+        <label><input type="checkbox" id="opt-seo" name="seo" value="5500"> SEO базовая (+5 500 ₽)</label>
+        <label><input type="checkbox" id="opt-design" name="design" value="9000"> Уникальный дизайн (+9 000 ₽)</label>
+        <label><input type="checkbox" id="opt-urgency" name="urgency"> Срочность 3–5 дней (+50 % к итогу)</label>
+      </div>
+
+      <div class="total">
+        <strong>Итого:</strong> <span id="total-price">0</span> ₽
+      </div>
+
+      <div class="buttons">
+        <button type="button" id="btn-offer">Получить коммерческое предложение</button>
+        <button type="button" id="btn-print">Распечатать расчёт</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
