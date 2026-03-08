@@ -52,9 +52,29 @@
         <button type="button" id="btn-print">Распечатать расчёт</button>
       </div>
 
-      <!-- Блок результата: появляется вместо alert, скрыт по умолчанию через CSS -->
-      <div id="result"></div>
     </form>
+  </div>
+
+  <!-- Модальное окно -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" id="close-modal">&times;</span>
+      <h2>Оформление заявки</h2>
+      <div class="field">
+        <label for="client-name">Имя *</label>
+        <input type="text" id="client-name" placeholder="Ваше имя">
+      </div>
+      <div class="field">
+        <label for="client-phone">Телефон *</label>
+        <input type="text" id="client-phone" placeholder="Ваш телефон">
+      </div>
+      <div class="field">
+        <label for="client-telegram">Telegram</label>
+        <input type="text" id="client-telegram" placeholder="@username">
+      </div>
+      <div id="modal-msg" class="modal-msg"></div>
+      <button type="button" id="btn-send-request" class="btn-primary">Отправить заявку</button>
+    </div>
   </div>
 
   <script src="script.js"></script>

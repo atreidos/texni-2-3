@@ -28,9 +28,17 @@ var elOptSeo        = document.getElementById("opt-seo");
 var elOptDesign     = document.getElementById("opt-design");
 var elOptUrgency    = document.getElementById("opt-urgency");
 var elTotalPrice    = document.getElementById("total-price");
-var elResult        = document.getElementById("result");
 var btnOffer        = document.getElementById("btn-offer");
 var btnPrint        = document.getElementById("btn-print");
+
+// Модальное окно
+var modal           = document.getElementById("modal");
+var closeModalBtn   = document.getElementById("close-modal");
+var btnSendRequest  = document.getElementById("btn-send-request");
+var clientName      = document.getElementById("client-name");
+var clientPhone     = document.getElementById("client-phone");
+var clientTelegram  = document.getElementById("client-telegram");
+var modalMsg        = document.getElementById("modal-msg");
 
 // Показать или скрыть поле «Ваша цена» для услуги «Другое»
 // Упрощено: одна строка вместо if/else с двумя display
@@ -78,12 +86,10 @@ function calcTotal() {
   return Math.round(total);
 }
 
-// Обновить ползунок и итог; скрыть устаревший результат при изменении формы
+// Обновить ползунок и итог
 function updateDisplay() {
   elScreensValue.textContent = elScreens.value;
   elTotalPrice.textContent = calcTotal().toLocaleString("ru-RU");
-  // Прячем блок результата — данные изменились, старый расчёт неактуален
-  elResult.style.display = "none";
 }
 
 // Собрать все данные формы для заявки
@@ -104,29 +110,38 @@ function getFormData() {
   };
 }
 
-// Текст заявки
-// Упрощено: прямая сборка строки вместо массива с join
-function getOfferText(data) {
-  var text = "ЗАЯВКА НА КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ\n\n";
-  text += "Услуга: " + data.service + "\n";
-  text += "Экранов/страниц: " + data.screens + "\n";
-  text += "Telegram + форма: " + (data.telegram ? "да" : "нет") + "\n";
-  text += "SEO базовая: " + (data.seo ? "да" : "нет") + "\n";
-  text += "Уникальный дизайн: " + (data.design ? "да" : "нет") + "\n";
-  text += "Срочность 3–5 дней: " + (data.urgency ? "да" : "нет") + "\n\n";
-  text += "Итого: " + data.total.toLocaleString("ru-RU") + " ₽";
-  return text;
-}
-
-// Обработчик: показать КП прямо на странице вместо alert
+// Обработчик: открыть модальное окно вместо alert
 function onOfferClick() {
   var data = getFormData();
-  var text = getOfferText(data);
-  // Вставляем текст в блок #result и делаем его видимым
-  // CSS-свойство white-space: pre-line сохранит переносы \n
-  elResult.textContent = text;
-  elResult.style.display = "block";
-  console.log("Данные калькулятора (для заявки):", data);
+  console.log("Данные калькулятора (сохранены для заявки):", data);
+  
+  // Очищаем поля и сообщения при открытии
+  clientName.value = "";
+  clientPhone.value = "";
+  clientTelegram.value = "";
+  modalMsg.className = "modal-msg";
+  modalMsg.textContent = "";
+  
+  modal.classList.add("show");
+}
+
+function closeOfferModal() {
+  modal.classList.remove("show");
+}
+
+function onSendRequestClick() {
+  var name = clientName.value.trim();
+  var phone = clientPhone.value.trim();
+  
+  if (!name || !phone) {
+    modalMsg.textContent = "Ошибка: заполните Имя и Телефон!";
+    modalMsg.className = "modal-msg error";
+    return;
+  }
+  
+  // Если всё заполнено
+  modalMsg.textContent = "Заявка отправлена!";
+  modalMsg.className = "modal-msg success";
 }
 
 // Обработчик: печать
@@ -157,6 +172,16 @@ function init() {
 
   btnOffer.addEventListener("click", onOfferClick);
   btnPrint.addEventListener("click", onPrintClick);
+  
+  closeModalBtn.addEventListener("click", closeOfferModal);
+  btnSendRequest.addEventListener("click", onSendRequestClick);
+  
+  // Закрытие по клику вне окна
+  window.addEventListener("click", function(event) {
+    if (event.target === modal) {
+      closeOfferModal();
+    }
+  });
 }
 
 // Запуск после загрузки страницы
