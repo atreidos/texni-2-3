@@ -52,46 +52,29 @@
         <button type="button" id="btn-print">Распечатать расчёт</button>
       </div>
 
-      <!-- Блок результата больше не используется, но можно оставить или удалить. Мы его удалим. -->
     </form>
   </div>
 
   <!-- Модальное окно -->
-  <div id="modal-overlay" class="modal-overlay">
+  <div id="modal" class="modal-overlay">
     <div class="modal-window">
-      <button id="modal-close" class="modal-close">&times;</button>
-      
-      <div id="modal-form-content">
-        <h2>Оставьте заявку</h2>
-        <p>Я свяжусь с вами для обсуждения деталей.</p>
-        
-        <form id="lead-form">
-          <div class="field">
-            <label for="lead-name">Имя <span class="req">*</span></label>
-            <input type="text" id="lead-name" placeholder="Иван">
-            <span class="error-text" id="err-name">Пожалуйста, введите ваше имя</span>
-          </div>
-          
-          <div class="field">
-            <label for="lead-phone">Телефон <span class="req">*</span></label>
-            <input type="tel" id="lead-phone" placeholder="+7 (999) 000-00-00">
-            <span class="error-text" id="err-phone">Пожалуйста, введите ваш телефон</span>
-          </div>
-          
-          <div class="field">
-            <label for="lead-tg">Telegram</label>
-            <input type="text" id="lead-tg" placeholder="@username">
-          </div>
-          
-          <button type="submit" class="btn-submit">Отправить заявку</button>
-        </form>
+      <button class="modal-close" id="close-modal">&times;</button>
+      <h2>Оформление заявки</h2>
+      <p class="modal-subtitle">Заполните форму, и я свяжусь с вами в течение дня</p>
+      <div class="field">
+        <label for="client-name">Имя <span class="req">*</span></label>
+        <input type="text" id="client-name" placeholder="Ваше имя">
       </div>
-
-      <div id="modal-success" class="modal-success">
-        <div class="success-icon">✓</div>
-        <h3>Заявка отправлена!</h3>
-        <p>Я свяжусь с вами в ближайшее время.</p>
+      <div class="field">
+        <label for="client-phone">Телефон <span class="req">*</span></label>
+        <input type="text" id="client-phone" placeholder="Ваш телефон">
       </div>
+      <div class="field">
+        <label for="client-telegram">Telegram</label>
+        <input type="text" id="client-telegram" placeholder="@username">
+      </div>
+      <div id="modal-msg" class="modal-msg"></div>
+      <button type="button" id="btn-send-request" class="btn-submit">Отправить заявку</button>
     </div>
   </div>
 

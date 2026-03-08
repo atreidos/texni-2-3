@@ -72,7 +72,8 @@ h1 {
 
 /* Инпуты и Селекты */
 select,
-input[type="number"] {
+input[type="number"],
+input[type="text"] {
   width: 100%;
   padding: 12px 16px;
   font-size: 1rem;
@@ -90,13 +91,15 @@ input[type="number"] {
   background-size: 16px;
 }
 
-input[type="number"] {
+input[type="number"],
+input[type="text"] {
   background-image: none;
   cursor: text;
 }
 
 select:focus,
-input[type="number"]:focus {
+input[type="number"]:focus,
+input[type="text"]:focus {
   outline: none;
   background-color: var(--bg-card);
   border-color: var(--primary);
@@ -316,16 +319,18 @@ input[type="checkbox"] {
   color: var(--text-main);
 }
 
-#modal-form-content h2 {
-  margin: 0 0 8px 0;
-  font-size: 1.25rem;
+.modal-window h2 {
+  margin: 0 0 6px 0;
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
   color: var(--text-main);
 }
 
-#modal-form-content p {
+.modal-subtitle {
   color: var(--text-muted);
-  margin: 0 0 24px 0;
-  font-size: 0.95rem;
+  margin: 0 0 28px 0;
+  font-size: 0.875rem;
 }
 
 /* Форма в модалке */
@@ -365,6 +370,7 @@ input.error-input {
   margin-top: 8px;
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+  font-family: inherit;
 }
 
 .btn-submit:hover {
@@ -375,6 +381,31 @@ input.error-input {
 
 .btn-submit:active {
   transform: translateY(0);
+}
+
+/* Сообщения в модалке */
+.modal-msg {
+  display: none;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.modal-msg.error {
+  display: block;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.modal-msg.success {
+  display: block;
+  background: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
 }
 
 /* Окно успеха */

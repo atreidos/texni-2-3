@@ -31,17 +31,14 @@ var elTotalPrice    = document.getElementById("total-price");
 var btnOffer        = document.getElementById("btn-offer");
 var btnPrint        = document.getElementById("btn-print");
 
-// Элементы модального окна
-var modalOverlay = document.getElementById("modal-overlay");
-var modalClose = document.getElementById("modal-close");
-var leadForm = document.getElementById("lead-form");
-var modalFormContent = document.getElementById("modal-form-content");
-var modalSuccess = document.getElementById("modal-success");
-
-var inputName = document.getElementById("lead-name");
-var inputPhone = document.getElementById("lead-phone");
-var fieldName = inputName.parentElement;
-var fieldPhone = inputPhone.parentElement;
+// Модальное окно
+var modal           = document.getElementById("modal");
+var closeModalBtn   = document.getElementById("close-modal");
+var btnSendRequest  = document.getElementById("btn-send-request");
+var clientName      = document.getElementById("client-name");
+var clientPhone     = document.getElementById("client-phone");
+var clientTelegram  = document.getElementById("client-telegram");
+var modalMsg        = document.getElementById("modal-msg");
 
 // Показать или скрыть поле «Ваша цена» для услуги «Другое»
 // Упрощено: одна строка вместо if/else с двумя display
@@ -63,33 +60,29 @@ function getServiceData() {
 // Посчитать итоговую цену
 function calcTotal() {
   var data = getServiceData();
-  var basePrice = data.basePrice;
-  var baseScreens = data.baseScreens;
   var screens = Number(elScreens.value) || 1;
 
   // База + доплата за экраны сверх базы
-  var screenTotal = basePrice;
-  if (screens > baseScreens) {
-    screenTotal = basePrice + (screens - baseScreens) * prices.extraScreen;
-  }
+  var extraScreens = screens > data.baseScreens ? screens - data.baseScreens : 0;
+  var screenTotal = data.basePrice + extraScreens * prices.extraScreen;
 
   // Добавляем опции
-  var add = 0;
-  if (elOptTelegram.checked) add += prices.telegram;
-  if (elOptSeo.checked) add += prices.seo;
-  if (elOptDesign.checked) add += prices.design;
+  var optionsTotal = 0;
+  if (elOptTelegram.checked) optionsTotal += prices.telegram;
+  if (elOptSeo.checked) optionsTotal += prices.seo;
+  if (elOptDesign.checked) optionsTotal += prices.design;
 
-  var total = screenTotal + add;
+  var total = screenTotal + optionsTotal;
 
   // Срочность: +50% к итогу
   if (elOptUrgency.checked) {
-    total = total * prices.urgencyMultiplier;
+    total *= prices.urgencyMultiplier;
   }
 
   return Math.round(total);
 }
 
-// Обновить ползунок и итог; скрыть устаревший результат при изменении формы
+// Обновить ползунок и итог
 function updateDisplay() {
   elScreensValue.textContent = elScreens.value;
   elTotalPrice.textContent = calcTotal().toLocaleString("ru-RU");
@@ -113,92 +106,39 @@ function getFormData() {
   };
 }
 
-// Функции для работы с модальным окном
-function openModal() {
-  modalOverlay.classList.add("active");
-  // Блокируем скролл на фоне
-  document.body.style.overflow = "hidden";
-  
-  // Сбрасываем состояния при каждом открытии
-  modalFormContent.style.display = "block";
-  modalSuccess.style.display = "none";
-  leadForm.reset();
-  removeError(inputName, fieldName);
-  removeError(inputPhone, fieldPhone);
-}
-
-function closeModal() {
-  modalOverlay.classList.remove("active");
-  // Возвращаем скролл
-  document.body.style.overflow = "";
-}
-
-function showError(input, fieldWrap) {
-  input.classList.add("error-input");
-  fieldWrap.classList.add("error");
-}
-
-function removeError(input, fieldWrap) {
-  input.classList.remove("error-input");
-  fieldWrap.classList.remove("error");
-}
-
-// Обработчик: открыть модалку при клике на "Получить КП"
+// Обработчик: открыть модальное окно вместо alert
 function onOfferClick() {
-  openModal();
+  var data = getFormData();
+  console.log("Данные калькулятора (сохранены для заявки):", data);
+  
+  // Очищаем поля и сообщения при открытии
+  clientName.value = "";
+  clientPhone.value = "";
+  clientTelegram.value = "";
+  modalMsg.className = "modal-msg";
+  modalMsg.textContent = "";
+  
+  modal.classList.add("active");
 }
 
-// Обработчик отправки формы в модалке
-leadForm.addEventListener("submit", function(e) {
-  e.preventDefault(); // Останавливаем перезагрузку страницы
-  
-  var isValid = true;
-  var nameVal = inputName.value.trim();
-  var phoneVal = inputPhone.value.trim();
-  
-  // Проверка имени на пустоту
-  if (nameVal === "") {
-    showError(inputName, fieldName);
-    isValid = false;
-  } else {
-    removeError(inputName, fieldName);
-  }
-  
-  // Проверка телефона на пустоту
-  if (phoneVal === "") {
-    showError(inputPhone, fieldPhone);
-    isValid = false;
-  } else {
-    removeError(inputPhone, fieldPhone);
-  }
-  
-  // Если всё заполнено, отправляем заявку
-  if (isValid) {
-    var calcData = getFormData();
-    console.log("Отправка заявки...", {
-      name: nameVal,
-      phone: phoneVal,
-      tg: document.getElementById("lead-tg").value,
-      calcData: calcData
-    });
-    
-    // Прячем форму, показываем блок с галочкой
-    modalFormContent.style.display = "none";
-    modalSuccess.style.display = "block";
-  }
-});
+function closeOfferModal() {
+  modal.classList.remove("active");
+}
 
-// Закрытие по клику на крестик
-modalClose.addEventListener("click", closeModal);
-
-// Закрытие по клику на темный фон
-modalOverlay.addEventListener("click", function(e) {
-  // e.target — элемент, по которому реально кликнули
-  // Если клик был именно по фону (не по самой плашке внутри), закрываем
-  if (e.target === modalOverlay) {
-    closeModal();
+function onSendRequestClick() {
+  var name = clientName.value.trim();
+  var phone = clientPhone.value.trim();
+  
+  if (!name || !phone) {
+    modalMsg.textContent = "Ошибка: заполните Имя и Телефон!";
+    modalMsg.className = "modal-msg error";
+    return;
   }
-});
+  
+  // Если всё заполнено
+  modalMsg.textContent = "Заявка отправлена!";
+  modalMsg.className = "modal-msg success";
+}
 
 // Обработчик: печать
 function onPrintClick() {
@@ -228,6 +168,16 @@ function init() {
 
   btnOffer.addEventListener("click", onOfferClick);
   btnPrint.addEventListener("click", onPrintClick);
+  
+  closeModalBtn.addEventListener("click", closeOfferModal);
+  btnSendRequest.addEventListener("click", onSendRequestClick);
+  
+  // Закрытие по клику вне окна
+  window.addEventListener("click", function(event) {
+    if (event.target === modal) {
+      closeOfferModal();
+    }
+  });
 }
 
 // Запуск после загрузки страницы
