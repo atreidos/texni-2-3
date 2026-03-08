@@ -260,6 +260,58 @@ input[type="checkbox"] {
   border-color: #cbd5e1;
 }
 
+/* Список "Что входит в вашу цену" */
+.price-breakdown {
+  list-style: none;
+  margin: 0 0 28px 0;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  font-size: 0.9rem;
+}
+
+.price-breakdown li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.price-breakdown li:last-child {
+  border-bottom: none;
+}
+
+.price-breakdown li:nth-child(even) {
+  background: var(--bg-body);
+}
+
+.bd-label {
+  color: var(--text-muted);
+}
+
+.bd-price {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.price-breakdown .bd-total {
+  background: var(--primary-light);
+  border-top: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.price-breakdown .bd-total .bd-label {
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.price-breakdown .bd-total .bd-price {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--primary-hover);
+}
+
 /* Модальное окно */
 .modal-overlay {
   position: fixed;

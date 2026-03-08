@@ -82,10 +82,43 @@ function calcTotal() {
   return Math.round(total);
 }
 
+// Собрать выбранные позиции и отрендерить список под итогом
+function renderBreakdown() {
+  var elBreakdown = document.getElementById("price-breakdown");
+  var data = getServiceData();
+  var screens = Number(elScreens.value) || 1;
+  var extraScreens = screens > data.baseScreens ? screens - data.baseScreens : 0;
+  var total = calcTotal();
+  var html = "";
+
+  var serviceLabel = elService.options[elService.selectedIndex].text.split(" —")[0];
+  html += "<li><span class='bd-label'>" + serviceLabel + "</span><span class='bd-price'>" + data.basePrice.toLocaleString("ru-RU") + " ₽</span></li>";
+
+  if (extraScreens > 0) {
+    html += "<li><span class='bd-label'>Доп. экраны ×" + extraScreens + "</span><span class='bd-price'>+" + (extraScreens * prices.extraScreen).toLocaleString("ru-RU") + " ₽</span></li>";
+  }
+  if (elOptTelegram.checked) {
+    html += "<li><span class='bd-label'>Telegram + форма</span><span class='bd-price'>+" + prices.telegram.toLocaleString("ru-RU") + " ₽</span></li>";
+  }
+  if (elOptSeo.checked) {
+    html += "<li><span class='bd-label'>SEO базовая</span><span class='bd-price'>+" + prices.seo.toLocaleString("ru-RU") + " ₽</span></li>";
+  }
+  if (elOptDesign.checked) {
+    html += "<li><span class='bd-label'>Уникальный дизайн</span><span class='bd-price'>+" + prices.design.toLocaleString("ru-RU") + " ₽</span></li>";
+  }
+  if (elOptUrgency.checked) {
+    html += "<li><span class='bd-label'>Срочность</span><span class='bd-price'>+50%</span></li>";
+  }
+
+  html += "<li class='bd-total'><span class='bd-label'>Итого</span><span class='bd-price'>" + total.toLocaleString("ru-RU") + " ₽</span></li>";
+  elBreakdown.innerHTML = html;
+}
+
 // Обновить ползунок и итог
 function updateDisplay() {
   elScreensValue.textContent = elScreens.value;
   elTotalPrice.textContent = calcTotal().toLocaleString("ru-RU");
+  renderBreakdown();
 }
 
 // Собрать все данные формы для заявки
