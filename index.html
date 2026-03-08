@@ -52,28 +52,46 @@
         <button type="button" id="btn-print">Распечатать расчёт</button>
       </div>
 
+      <!-- Блок результата больше не используется, но можно оставить или удалить. Мы его удалим. -->
     </form>
   </div>
 
   <!-- Модальное окно -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" id="close-modal">&times;</span>
-      <h2>Оформление заявки</h2>
-      <div class="field">
-        <label for="client-name">Имя *</label>
-        <input type="text" id="client-name" placeholder="Ваше имя">
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal-window">
+      <button id="modal-close" class="modal-close">&times;</button>
+      
+      <div id="modal-form-content">
+        <h2>Оставьте заявку</h2>
+        <p>Я свяжусь с вами для обсуждения деталей.</p>
+        
+        <form id="lead-form">
+          <div class="field">
+            <label for="lead-name">Имя <span class="req">*</span></label>
+            <input type="text" id="lead-name" placeholder="Иван">
+            <span class="error-text" id="err-name">Пожалуйста, введите ваше имя</span>
+          </div>
+          
+          <div class="field">
+            <label for="lead-phone">Телефон <span class="req">*</span></label>
+            <input type="tel" id="lead-phone" placeholder="+7 (999) 000-00-00">
+            <span class="error-text" id="err-phone">Пожалуйста, введите ваш телефон</span>
+          </div>
+          
+          <div class="field">
+            <label for="lead-tg">Telegram</label>
+            <input type="text" id="lead-tg" placeholder="@username">
+          </div>
+          
+          <button type="submit" class="btn-submit">Отправить заявку</button>
+        </form>
       </div>
-      <div class="field">
-        <label for="client-phone">Телефон *</label>
-        <input type="text" id="client-phone" placeholder="Ваш телефон">
+
+      <div id="modal-success" class="modal-success">
+        <div class="success-icon">✓</div>
+        <h3>Заявка отправлена!</h3>
+        <p>Я свяжусь с вами в ближайшее время.</p>
       </div>
-      <div class="field">
-        <label for="client-telegram">Telegram</label>
-        <input type="text" id="client-telegram" placeholder="@username">
-      </div>
-      <div id="modal-msg" class="modal-msg"></div>
-      <button type="button" id="btn-send-request" class="btn-primary">Отправить заявку</button>
     </div>
   </div>
 

@@ -31,14 +31,17 @@ var elTotalPrice    = document.getElementById("total-price");
 var btnOffer        = document.getElementById("btn-offer");
 var btnPrint        = document.getElementById("btn-print");
 
-// Модальное окно
-var modal           = document.getElementById("modal");
-var closeModalBtn   = document.getElementById("close-modal");
-var btnSendRequest  = document.getElementById("btn-send-request");
-var clientName      = document.getElementById("client-name");
-var clientPhone     = document.getElementById("client-phone");
-var clientTelegram  = document.getElementById("client-telegram");
-var modalMsg        = document.getElementById("modal-msg");
+// Элементы модального окна
+var modalOverlay = document.getElementById("modal-overlay");
+var modalClose = document.getElementById("modal-close");
+var leadForm = document.getElementById("lead-form");
+var modalFormContent = document.getElementById("modal-form-content");
+var modalSuccess = document.getElementById("modal-success");
+
+var inputName = document.getElementById("lead-name");
+var inputPhone = document.getElementById("lead-phone");
+var fieldName = inputName.parentElement;
+var fieldPhone = inputPhone.parentElement;
 
 // Показать или скрыть поле «Ваша цена» для услуги «Другое»
 // Упрощено: одна строка вместо if/else с двумя display
@@ -86,7 +89,7 @@ function calcTotal() {
   return Math.round(total);
 }
 
-// Обновить ползунок и итог
+// Обновить ползунок и итог; скрыть устаревший результат при изменении формы
 function updateDisplay() {
   elScreensValue.textContent = elScreens.value;
   elTotalPrice.textContent = calcTotal().toLocaleString("ru-RU");
@@ -110,39 +113,92 @@ function getFormData() {
   };
 }
 
-// Обработчик: открыть модальное окно вместо alert
+// Функции для работы с модальным окном
+function openModal() {
+  modalOverlay.classList.add("active");
+  // Блокируем скролл на фоне
+  document.body.style.overflow = "hidden";
+  
+  // Сбрасываем состояния при каждом открытии
+  modalFormContent.style.display = "block";
+  modalSuccess.style.display = "none";
+  leadForm.reset();
+  removeError(inputName, fieldName);
+  removeError(inputPhone, fieldPhone);
+}
+
+function closeModal() {
+  modalOverlay.classList.remove("active");
+  // Возвращаем скролл
+  document.body.style.overflow = "";
+}
+
+function showError(input, fieldWrap) {
+  input.classList.add("error-input");
+  fieldWrap.classList.add("error");
+}
+
+function removeError(input, fieldWrap) {
+  input.classList.remove("error-input");
+  fieldWrap.classList.remove("error");
+}
+
+// Обработчик: открыть модалку при клике на "Получить КП"
 function onOfferClick() {
-  var data = getFormData();
-  console.log("Данные калькулятора (сохранены для заявки):", data);
-  
-  // Очищаем поля и сообщения при открытии
-  clientName.value = "";
-  clientPhone.value = "";
-  clientTelegram.value = "";
-  modalMsg.className = "modal-msg";
-  modalMsg.textContent = "";
-  
-  modal.classList.add("show");
+  openModal();
 }
 
-function closeOfferModal() {
-  modal.classList.remove("show");
-}
-
-function onSendRequestClick() {
-  var name = clientName.value.trim();
-  var phone = clientPhone.value.trim();
+// Обработчик отправки формы в модалке
+leadForm.addEventListener("submit", function(e) {
+  e.preventDefault(); // Останавливаем перезагрузку страницы
   
-  if (!name || !phone) {
-    modalMsg.textContent = "Ошибка: заполните Имя и Телефон!";
-    modalMsg.className = "modal-msg error";
-    return;
+  var isValid = true;
+  var nameVal = inputName.value.trim();
+  var phoneVal = inputPhone.value.trim();
+  
+  // Проверка имени на пустоту
+  if (nameVal === "") {
+    showError(inputName, fieldName);
+    isValid = false;
+  } else {
+    removeError(inputName, fieldName);
   }
   
-  // Если всё заполнено
-  modalMsg.textContent = "Заявка отправлена!";
-  modalMsg.className = "modal-msg success";
-}
+  // Проверка телефона на пустоту
+  if (phoneVal === "") {
+    showError(inputPhone, fieldPhone);
+    isValid = false;
+  } else {
+    removeError(inputPhone, fieldPhone);
+  }
+  
+  // Если всё заполнено, отправляем заявку
+  if (isValid) {
+    var calcData = getFormData();
+    console.log("Отправка заявки...", {
+      name: nameVal,
+      phone: phoneVal,
+      tg: document.getElementById("lead-tg").value,
+      calcData: calcData
+    });
+    
+    // Прячем форму, показываем блок с галочкой
+    modalFormContent.style.display = "none";
+    modalSuccess.style.display = "block";
+  }
+});
+
+// Закрытие по клику на крестик
+modalClose.addEventListener("click", closeModal);
+
+// Закрытие по клику на темный фон
+modalOverlay.addEventListener("click", function(e) {
+  // e.target — элемент, по которому реально кликнули
+  // Если клик был именно по фону (не по самой плашке внутри), закрываем
+  if (e.target === modalOverlay) {
+    closeModal();
+  }
+});
 
 // Обработчик: печать
 function onPrintClick() {
@@ -172,16 +228,6 @@ function init() {
 
   btnOffer.addEventListener("click", onOfferClick);
   btnPrint.addEventListener("click", onPrintClick);
-  
-  closeModalBtn.addEventListener("click", closeOfferModal);
-  btnSendRequest.addEventListener("click", onSendRequestClick);
-  
-  // Закрытие по клику вне окна
-  window.addEventListener("click", function(event) {
-    if (event.target === modal) {
-      closeOfferModal();
-    }
-  });
 }
 
 // Запуск после загрузки страницы
