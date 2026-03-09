@@ -70,6 +70,54 @@ h1 {
   color: var(--text-muted);
 }
 
+.promo-row {
+  display: flex;
+  gap: 10px;
+}
+
+.promo-row input[type="text"] {
+  flex: 1;
+}
+
+.btn-promo {
+  border: 1px solid var(--border-color);
+  background: #fff;
+  color: var(--text-main);
+  border-radius: var(--radius-md);
+  padding: 0 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-promo:hover {
+  background: var(--bg-body);
+  border-color: #cbd5e1;
+}
+
+.promo-msg {
+  display: none;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+}
+
+.promo-msg.success {
+  display: block;
+  background: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
+}
+
+.promo-msg.error {
+  display: block;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
 /* Инпуты и Селекты */
 select,
 input[type="number"],
@@ -312,6 +360,11 @@ input[type="checkbox"] {
   font-size: 1.1rem;
   font-weight: 800;
   color: var(--primary-hover);
+}
+
+.bd-discount {
+  color: #166534;
+  font-weight: 700;
 }
 
 /* Модальное окно */

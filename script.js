@@ -14,7 +14,12 @@ var prices = {
   seo: 5500,
   design: 9000,
   // Срочность: множитель к итогу (+50% = 1.5)
-  urgencyMultiplier: 1.5
+  urgencyMultiplier: 1.5,
+  // Промокоды (проценты скидки)
+  promoCodes: {
+    SALE10: 10,
+    SUPER20: 20
+  }
 };
 
 // Элементы формы (получаем один раз при загрузке)
@@ -27,6 +32,9 @@ var elOptTelegram   = document.getElementById("opt-telegram");
 var elOptSeo        = document.getElementById("opt-seo");
 var elOptDesign     = document.getElementById("opt-design");
 var elOptUrgency    = document.getElementById("opt-urgency");
+var elPromoCode     = document.getElementById("promo-code");
+var btnApplyPromo   = document.getElementById("btn-apply-promo");
+var promoMsg        = document.getElementById("promo-msg");
 var elTotalPrice    = document.getElementById("total-price");
 var btnOffer        = document.getElementById("btn-offer");
 var btnPrint        = document.getElementById("btn-print");
@@ -40,6 +48,7 @@ var clientName      = document.getElementById("client-name");
 var clientPhone     = document.getElementById("client-phone");
 var clientTelegram  = document.getElementById("client-telegram");
 var modalMsg        = document.getElementById("modal-msg");
+var appliedPromoCode = "";
 
 // Показать или скрыть поле «Ваша цена» для услуги «Другое»
 // Упрощено: одна строка вместо if/else с двумя display
@@ -59,7 +68,7 @@ function getServiceData() {
 }
 
 // Посчитать итоговую цену
-function calcTotal() {
+function getCalculationDetails() {
   var data = getServiceData();
   var screens = Number(elScreens.value) || 1;
 
@@ -73,23 +82,45 @@ function calcTotal() {
   if (elOptSeo.checked) optionsTotal += prices.seo;
   if (elOptDesign.checked) optionsTotal += prices.design;
 
-  var total = screenTotal + optionsTotal;
+  var subtotal = screenTotal + optionsTotal;
+  var totalAfterUrgency = subtotal;
+  var urgencyApplied = elOptUrgency.checked;
 
   // Срочность: +50% к итогу
-  if (elOptUrgency.checked) {
-    total *= prices.urgencyMultiplier;
+  if (urgencyApplied) {
+    totalAfterUrgency *= prices.urgencyMultiplier;
   }
 
-  return Math.round(total);
+  var promoDiscountPercent = appliedPromoCode ? prices.promoCodes[appliedPromoCode] : 0;
+  var promoDiscountValue = Math.round(totalAfterUrgency * (promoDiscountPercent / 100));
+  var total = Math.round(totalAfterUrgency - promoDiscountValue);
+  if (total < 0) total = 0;
+
+  return {
+    data: data,
+    screens: screens,
+    extraScreens: extraScreens,
+    screenTotal: screenTotal,
+    optionsTotal: optionsTotal,
+    urgencyApplied: urgencyApplied,
+    totalAfterUrgency: totalAfterUrgency,
+    promoDiscountPercent: promoDiscountPercent,
+    promoDiscountValue: promoDiscountValue,
+    total: total
+  };
+}
+
+function calcTotal() {
+  return getCalculationDetails().total;
 }
 
 // Собрать выбранные позиции и отрендерить список под итогом
 function renderBreakdown() {
   var elBreakdown = document.getElementById("price-breakdown");
-  var data = getServiceData();
-  var screens = Number(elScreens.value) || 1;
-  var extraScreens = screens > data.baseScreens ? screens - data.baseScreens : 0;
-  var total = calcTotal();
+  var details = getCalculationDetails();
+  var data = details.data;
+  var extraScreens = details.extraScreens;
+  var total = details.total;
   var html = "";
 
   var serviceLabel = elService.options[elService.selectedIndex].text.split(" —")[0];
@@ -107,12 +138,60 @@ function renderBreakdown() {
   if (elOptDesign.checked) {
     html += "<li><span class='bd-label'>Уникальный дизайн</span><span class='bd-price'>+" + prices.design.toLocaleString("ru-RU") + " ₽</span></li>";
   }
-  if (elOptUrgency.checked) {
+  if (details.urgencyApplied) {
     html += "<li><span class='bd-label'>Срочность</span><span class='bd-price'>+50%</span></li>";
+  }
+  if (details.promoDiscountPercent > 0) {
+    html += "<li><span class='bd-label'>Промокод " + appliedPromoCode + " (-" + details.promoDiscountPercent + "%)</span><span class='bd-price bd-discount'>-" + details.promoDiscountValue.toLocaleString("ru-RU") + " ₽</span></li>";
   }
 
   html += "<li class='bd-total'><span class='bd-label'>Итого</span><span class='bd-price'>" + total.toLocaleString("ru-RU") + " ₽</span></li>";
   elBreakdown.innerHTML = html;
+}
+
+function normalizePromoCode(value) {
+  return (value || "").trim().toUpperCase();
+}
+
+function clearPromoMessage() {
+  promoMsg.textContent = "";
+  promoMsg.className = "promo-msg";
+}
+
+function onApplyPromoClick() {
+  var promoCode = normalizePromoCode(elPromoCode.value);
+  var discountPercent = prices.promoCodes[promoCode];
+
+  if (!promoCode) {
+    appliedPromoCode = "";
+    promoMsg.textContent = "Введите промокод.";
+    promoMsg.className = "promo-msg error";
+    updateDisplay();
+    return;
+  }
+
+  if (!discountPercent) {
+    appliedPromoCode = "";
+    promoMsg.textContent = "Промокод не найден.";
+    promoMsg.className = "promo-msg error";
+    updateDisplay();
+    return;
+  }
+
+  appliedPromoCode = promoCode;
+  elPromoCode.value = promoCode;
+  promoMsg.textContent = "Промокод применён: скидка " + discountPercent + "%.";
+  promoMsg.className = "promo-msg success";
+  updateDisplay();
+}
+
+function onPromoInputChange() {
+  var promoCode = normalizePromoCode(elPromoCode.value);
+  if (appliedPromoCode && promoCode !== appliedPromoCode) {
+    appliedPromoCode = "";
+    clearPromoMessage();
+    updateDisplay();
+  }
 }
 
 // Обновить ползунок и итог
@@ -124,19 +203,21 @@ function updateDisplay() {
 
 // Собрать все данные формы для заявки
 function getFormData() {
-  var data = getServiceData();
-  var screens = Number(elScreens.value) || 1;
-  var total = calcTotal();
+  var details = getCalculationDetails();
+  var data = details.data;
   return {
     service: elService.options[elService.selectedIndex].text,
     basePrice: data.basePrice,
     baseScreens: data.baseScreens,
-    screens: screens,
+    screens: details.screens,
     telegram: elOptTelegram.checked,
     seo: elOptSeo.checked,
     design: elOptDesign.checked,
     urgency: elOptUrgency.checked,
-    total: total
+    promoCode: appliedPromoCode || null,
+    promoDiscountPercent: details.promoDiscountPercent,
+    promoDiscountValue: details.promoDiscountValue,
+    total: details.total
   };
 }
 
@@ -189,6 +270,9 @@ function onResetClick() {
   elOptDesign.checked = false;
   elOptUrgency.checked = false;
   elScreens.value = 5;
+  elPromoCode.value = "";
+  appliedPromoCode = "";
+  clearPromoMessage();
 
   updateDisplay();
 }
@@ -213,6 +297,14 @@ function init() {
   elOptSeo.addEventListener("change", updateDisplay);
   elOptDesign.addEventListener("change", updateDisplay);
   elOptUrgency.addEventListener("change", updateDisplay);
+  btnApplyPromo.addEventListener("click", onApplyPromoClick);
+  elPromoCode.addEventListener("input", onPromoInputChange);
+  elPromoCode.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      onApplyPromoClick();
+    }
+  });
 
   btnOffer.addEventListener("click", onOfferClick);
   btnPrint.addEventListener("click", onPrintClick);

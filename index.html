@@ -43,6 +43,15 @@
       <!-- hr.divider — визуальный разделитель между настройками и итогом -->
       <hr class="divider">
 
+      <div class="field promo-field">
+        <label for="promo-code">Промокод</label>
+        <div class="promo-row">
+          <input type="text" id="promo-code" name="promo-code" placeholder="Введите промокод">
+          <button type="button" id="btn-apply-promo" class="btn-promo">Применить</button>
+        </div>
+        <div id="promo-msg" class="promo-msg"></div>
+      </div>
+
       <div class="total">
         <strong>Итого:</strong> <span id="total-price">0</span> ₽
       </div>
