@@ -30,6 +30,7 @@ var elOptUrgency    = document.getElementById("opt-urgency");
 var elTotalPrice    = document.getElementById("total-price");
 var btnOffer        = document.getElementById("btn-offer");
 var btnPrint        = document.getElementById("btn-print");
+var btnReset        = document.getElementById("btn-reset");
 
 // Модальное окно
 var modal           = document.getElementById("modal");
@@ -178,6 +179,21 @@ function onPrintClick() {
   window.print();
 }
 
+// Обработчик: сброс калькулятора к базовым значениям
+function onResetClick() {
+  if (!window.confirm("Вы уверены?")) {
+    return;
+  }
+
+  elOptTelegram.checked = false;
+  elOptSeo.checked = false;
+  elOptDesign.checked = false;
+  elOptUrgency.checked = false;
+  elScreens.value = 5;
+
+  updateDisplay();
+}
+
 // Подписка на все изменения формы и кнопки
 function init() {
   toggleOtherPrice();
@@ -201,6 +217,7 @@ function init() {
 
   btnOffer.addEventListener("click", onOfferClick);
   btnPrint.addEventListener("click", onPrintClick);
+  btnReset.addEventListener("click", onResetClick);
   
   closeModalBtn.addEventListener("click", closeOfferModal);
   btnSendRequest.addEventListener("click", onSendRequestClick);
