@@ -231,30 +231,32 @@ input[type="checkbox"] {
 }
 
 /* Главная кнопка */
-.buttons button:first-child {
+#btn-offer {
   background: var(--primary);
   color: #fff;
   box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
 }
 
-.buttons button:first-child:hover {
+#btn-offer:hover {
   background: var(--primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 6px rgba(59, 130, 246, 0.4);
 }
 
-.buttons button:first-child:active {
+#btn-offer:active {
   transform: translateY(0);
 }
 
-/* Второстепенная кнопка (печать) */
-.buttons button:not(:first-child) {
+/* Второстепенные кнопки */
+#btn-print,
+#btn-reset {
   background: #fff;
   color: var(--text-muted);
   border: 1px solid var(--border-color);
 }
 
-.buttons button:not(:first-child):hover {
+#btn-print:hover,
+#btn-reset:hover {
   background: var(--bg-body);
   color: var(--text-main);
   border-color: #cbd5e1;

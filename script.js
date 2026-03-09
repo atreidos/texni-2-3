@@ -179,11 +179,10 @@ function onPrintClick() {
   window.print();
 }
 
-// Обработчик: сброс калькулятора к базовым значениям
+// Обработчик: сброс калькулятора к базовому состоянию
 function onResetClick() {
-  if (!window.confirm("Вы уверены?")) {
-    return;
-  }
+  var confirmed = window.confirm("Вы уверены?");
+  if (!confirmed) return;
 
   elOptTelegram.checked = false;
   elOptSeo.checked = false;
