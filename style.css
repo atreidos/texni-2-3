@@ -179,6 +179,80 @@ input[type="checkbox"] {
   border-radius: 4px;
 }
 
+/* Поле промокода */
+.promo-field {
+  margin-bottom: 20px;
+}
+
+.promo-row {
+  display: flex;
+  gap: 10px;
+}
+
+.promo-row input {
+  flex: 1;
+}
+
+#btn-promo {
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+  font-family: inherit;
+}
+
+#btn-promo:hover {
+  background: var(--primary-hover);
+}
+
+#btn-promo:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.promo-msg {
+  display: none;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.promo-msg.error {
+  display: block;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.promo-msg.success {
+  display: block;
+  background: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
+}
+
+/* Строка скидки в разбивке */
+.price-breakdown .bd-discount {
+  background: var(--success-bg);
+}
+
+.price-breakdown .bd-discount .bd-label {
+  color: var(--success-text);
+  font-weight: 600;
+}
+
+.price-breakdown .bd-discount .bd-price {
+  color: var(--success-text);
+}
+
 /* Разделитель */
 .divider {
   border: none;

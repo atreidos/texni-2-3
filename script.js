@@ -17,6 +17,15 @@ var prices = {
   urgencyMultiplier: 1.5
 };
 
+// Промокоды: ключ — код, значение — доля скидки (0.1 = 10%)
+var promoCodes = {
+  "SALE10":  0.10,
+  "SUPER20": 0.20
+};
+
+// Текущая активная скидка (0 = нет скидки)
+var activeDiscount = 0;
+
 // Элементы формы (получаем один раз при загрузке)
 var elService       = document.getElementById("service");
 var elOtherPriceWrap = document.getElementById("other-price-wrap");
@@ -28,6 +37,9 @@ var elOptSeo        = document.getElementById("opt-seo");
 var elOptDesign     = document.getElementById("opt-design");
 var elOptUrgency    = document.getElementById("opt-urgency");
 var elTotalPrice    = document.getElementById("total-price");
+var elPromoInput    = document.getElementById("promo-input");
+var btnPromo        = document.getElementById("btn-promo");
+var elPromoMsg      = document.getElementById("promo-msg");
 var btnOffer        = document.getElementById("btn-offer");
 var btnPrint        = document.getElementById("btn-print");
 var btnReset        = document.getElementById("btn-reset");
@@ -80,6 +92,11 @@ function calcTotal() {
     total *= prices.urgencyMultiplier;
   }
 
+  // Скидка по промокоду
+  if (activeDiscount > 0) {
+    total *= (1 - activeDiscount);
+  }
+
   return Math.round(total);
 }
 
@@ -110,6 +127,9 @@ function renderBreakdown() {
   if (elOptUrgency.checked) {
     html += "<li><span class='bd-label'>Срочность</span><span class='bd-price'>+50%</span></li>";
   }
+  if (activeDiscount > 0) {
+    html += "<li class='bd-discount'><span class='bd-label'>Скидка по промокоду</span><span class='bd-price'>−" + (activeDiscount * 100) + "%</span></li>";
+  }
 
   html += "<li class='bd-total'><span class='bd-label'>Итого</span><span class='bd-price'>" + total.toLocaleString("ru-RU") + " ₽</span></li>";
   elBreakdown.innerHTML = html;
@@ -138,6 +158,32 @@ function getFormData() {
     urgency: elOptUrgency.checked,
     total: total
   };
+}
+
+// Применить промокод
+function applyPromoCode() {
+  var code = elPromoInput.value.trim().toUpperCase();
+
+  if (!code) {
+    elPromoMsg.textContent = "Введите промокод";
+    elPromoMsg.className = "promo-msg error";
+    return;
+  }
+
+  if (promoCodes[code] !== undefined) {
+    activeDiscount = promoCodes[code];
+    var percent = activeDiscount * 100;
+    elPromoMsg.textContent = "Промокод применён — скидка " + percent + "%!";
+    elPromoMsg.className = "promo-msg success";
+    elPromoInput.disabled = true;
+    btnPromo.disabled = true;
+  } else {
+    activeDiscount = 0;
+    elPromoMsg.textContent = "Промокод не найден";
+    elPromoMsg.className = "promo-msg error";
+  }
+
+  updateDisplay();
 }
 
 // Обработчик: открыть модальное окно вместо alert
@@ -190,6 +236,14 @@ function onResetClick() {
   elOptUrgency.checked = false;
   elScreens.value = 5;
 
+  // Сбросить промокод
+  activeDiscount = 0;
+  elPromoInput.value = "";
+  elPromoInput.disabled = false;
+  btnPromo.disabled = false;
+  elPromoMsg.textContent = "";
+  elPromoMsg.className = "promo-msg";
+
   updateDisplay();
 }
 
@@ -214,6 +268,7 @@ function init() {
   elOptDesign.addEventListener("change", updateDisplay);
   elOptUrgency.addEventListener("change", updateDisplay);
 
+  btnPromo.addEventListener("click", applyPromoCode);
   btnOffer.addEventListener("click", onOfferClick);
   btnPrint.addEventListener("click", onPrintClick);
   btnReset.addEventListener("click", onResetClick);
